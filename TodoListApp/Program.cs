@@ -48,6 +48,7 @@ while (running){
             break;
 
         case string s when s.StartsWith("add "):
+            string raw = s.Substring(4).Trim();
             if (raw.Length >= 2 && raw.StartsWith("\"") && raw.EndsWith("\"")){
                 string task = raw.Substring(1, raw.Length - 2);
 
