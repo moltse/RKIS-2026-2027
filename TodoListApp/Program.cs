@@ -48,25 +48,30 @@ while (running){
             break;
 
         case string s when s.StartsWith("add "):
-            string task = s.Substring(5).TrimEnd('"');
+            if (raw.Length >= 2 && raw.StartsWith("\"") && raw.EndsWith("\"")){
+                string task = raw.Substring(1, raw.Length - 2);
+
             if (todoCount >= todos.Length){
                 string[] newTodos = new string[todos.Length * 2];
-                for (int i = 0; i < todos.Length; i++)
-                {
+                for (int i = 0; i < todos.Length; i++){
                     newTodos[i] = todos[i];
+                    todos = newTodos;
                 }
-                todos = newTodos;
+                todos[todoCount] = task;
+                todoCount++;
+                Console.WriteLine($"Добавлено: {task}");
+            }else{
+                Console.WriteLine("Ошибка: текст задачи должен быть в кавычках. Пример: add \"купить хлеб\"");
             }
-            todos[todoCount] = task;
-            todoCount++;
-            Console.WriteLine($"Добавлено: {task}");
             break;
 
         case "view":
-            for (int i = 0; i < todos.Length; i++){
-                if (!string.IsNullOrEmpty(todos[i])){
-                    Console.WriteLine($"[{i + 1}] {todos[i]}");
-                }
+            if (todos.Count == 0){
+                Console.WriteLine("Список задач пуст.");
+                break;
+            }
+            for (int i = 0; i < todos.Count; i++){
+                Console.WriteLine($"[{i + 1}] {todos[i]}");
             }
             break;
             
