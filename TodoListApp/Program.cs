@@ -20,8 +20,7 @@ Console.Write($"Добавлен пользователь с именем: {name
 
 
 // Работа 3
-string[] todos = new string[2];
-int todoCount = 0;
+List<string> todos = new List<string>();
 bool running = true; //нужно для того чтобы exit останавливал работу, еще можно было сделать метод и через return
 
 while (running){
@@ -48,28 +47,29 @@ while (running){
             break;
 
         case string s when s.StartsWith("add "):
-            string task = s.Substring(5).TrimEnd('"');
-            if (todoCount >= todos.Length){
-                string[] newTodos = new string[todos.Length * 2];
-                for (int i = 0; i < todos.Length; i++)
-                {
-                    newTodos[i] = todos[i];
-                }
-                todos = newTodos;
+            // берём всё после "add " и убираем крайние кавычки
+            string raw = s.Substring(4).Trim();
+
+            if (raw.Length >= 2 && raw.StartsWith("\"") && raw.EndsWith("\"")){
+                string task = raw.Substring(1, raw.Length - 2); // текст без кавычек
+                todos.Add(task);
+                Console.WriteLine($"Добавлено: {task}");
             }
-            todos[todoCount] = task;
-            todoCount++;
-            Console.WriteLine($"Добавлено: {task}");
+            else{
+                Console.WriteLine("Ошибка: текст задачи должен быть в кавычках. Пример: add \"купить хлеб\"");
+            }
             break;
 
         case "view":
-            for (int i = 0; i < todos.Length; i++){
-                if (!string.IsNullOrEmpty(todos[i])){
-                    Console.WriteLine($"[{i + 1}] {todos[i]}");
-                }
+            if (todos.Count == 0){
+                Console.WriteLine("Список задач пуст.");
+                break;
+            }
+            for (int i = 0; i < todos.Count; i++){
+                Console.WriteLine($"[{i + 1}] {todos[i]}");
             }
             break;
-            
+        
         default:
             Console.WriteLine("Неизвестная команда, введите help для вывода списка команд");
             break;
